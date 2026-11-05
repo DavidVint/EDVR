@@ -1,15 +1,18 @@
-addict
-future
-lmdb
+# Hand-trimmed by turbbench's onboarding, down from the upstream repo's own
+# requirements.txt (addict, future, lmdb, pyyaml, requests, scikit-image, scipy,
+# tb-nightly, yapf) - those are for BasicSR's generic training/config/dataset/logging
+# framework, none of which adapters/EDVR/model_adapter.py touches: it imports only
+# basicsr.models.archs.edvr_arch.EDVR + its one dependency (arch_util.py), isolated
+# from the rest of BasicSR on purpose (see model_adapter.py's own docstring) - per the
+# user's explicit request to extract just the EDVR architecture, not the whole
+# basicsr framework EDVR happens to ship inside.
+#
+# numpy/opencv-python-headless are still needed even though model_adapter.py never
+# calls them directly: arch_util.py does `from basicsr.utils import get_root_logger`,
+# and basicsr/utils/__init__.py unconditionally imports img_util.py at package-import
+# time, which imports cv2+numpy at module level (used by other repo functionality we
+# never call, but the import itself still has to succeed).
 numpy
-opencv-python
-Pillow
-pyyaml
-requests
-scikit-image
-scipy
-tb-nightly
-torch>=1.3
+opencv-python-headless
+torch
 torchvision
-tqdm
-yapf
